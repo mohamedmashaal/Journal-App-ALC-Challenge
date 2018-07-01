@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -149,14 +150,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     private void showLoginScreen() {
         mLoginScreen.setVisibility(View.VISIBLE);
-        mMainScreen.setVisibility(View.INVISIBLE);
-        mAdditionScreen.setVisibility(View.INVISIBLE);
+        mMainScreen.setVisibility(View.GONE);
+        mAdditionScreen.setVisibility(View.GONE);
     }
 
     private void showMainScreen() {
         mMainScreen.setVisibility(View.VISIBLE);
-        mLoginScreen.setVisibility(View.INVISIBLE);
-        mAdditionScreen.setVisibility(View.INVISIBLE);
+        mLoginScreen.setVisibility(View.GONE);
+        mAdditionScreen.setVisibility(View.GONE);
+        mSignOutButton.setVisibility(View.VISIBLE);
     }
 
     private boolean isSignedIn(){
@@ -171,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                         updateUI(GoogleSignIn.getLastSignedInAccount(MainActivity.this));
                     }
                 });
+        mSignOutButton.setVisibility(View.GONE);
     }
 
     public void newDiary(View view) {
@@ -178,25 +181,43 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     }
 
     private void showAdditionScreen() {
-        mMainScreen.setVisibility(View.INVISIBLE);
         mAdditionScreen.setVisibility(View.VISIBLE);
-        mLoginScreen.setVisibility(View.INVISIBLE);
+        mMainScreen.setVisibility(View.GONE);
+        mLoginScreen.setVisibility(View.GONE);
     }
 
     public void addNewDiary(View view) {
         int year = Integer.parseInt(mYearEditText.getText().toString());
         int month = Integer.parseInt(mMonthEditText.getText().toString());
         int day = Integer.parseInt(mDayEditText.getText().toString());
-        String title = mTitleEditText.getText().toString();
-        String content = mContentEditText.getText().toString();
-        DiaryItem item = new DiaryItem(year,month,day);
-        item.setDairyContent(content);
-        item.setTitle(title);
-        dataManager.addNewDiaryForCurrentUser(item);
-        mDataSet.add(item);
-        mAdapter.updateDataSet(mDataSet);
-        mMainScreen.setVisibility(View.VISIBLE);
-        mAdditionScreen.setVisibility(View.INVISIBLE);
+        if(okayDate(year, month, day) && notFoundBefore(year, month, day)) {
+            String title = mTitleEditText.getText().toString();
+            String content = mContentEditText.getText().toString();
+            DiaryItem item = new DiaryItem(year, month, day);
+            item.setDairyContent(content);
+            item.setTitle(title);
+            dataManager.addNewDiaryForCurrentUser(item);
+            mDataSet.add(item);
+            mAdapter.updateDataSet(mDataSet);
+            showMainScreen();
+        }
+        else{
+            Toast.makeText(this, "NOT ACCEPTABLE DATE",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private boolean notFoundBefore(int year, int month, int day) {
+        String diary_date = Integer.toString(year) + "-" + Integer.toString(month) + "-" +Integer.toString(day);
+        if(dataManager.getDiaryItem(diary_date) == null)
+            return true;
+        return false;
+    }
+
+    private boolean okayDate(int year, int month, int day) {
+        if ( year > 0 && month > 0 && month <= 12 && day > 0 && day <= 31)
+            return true;
+        return false;
     }
 
     @Override

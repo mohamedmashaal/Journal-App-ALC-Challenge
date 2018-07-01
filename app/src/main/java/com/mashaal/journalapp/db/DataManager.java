@@ -112,6 +112,8 @@ public class DataManager {
         );
         ArrayList<DiaryItem> dataSet = getDiaryItems(cursor);
         cursor.close();
+        if(dataSet.size() == 0)
+            return null;
         return dataSet.get(0);
     }
 

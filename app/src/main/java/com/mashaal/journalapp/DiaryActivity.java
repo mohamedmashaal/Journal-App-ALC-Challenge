@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mashaal.journalapp.db.DataManager;
 
@@ -83,7 +84,7 @@ public class DiaryActivity extends AppCompatActivity {
 
     private void showEditScreen() {
         mEditScreen.setVisibility(View.VISIBLE);
-        mDiaryScreen.setVisibility(View.INVISIBLE);
+        mDiaryScreen.setVisibility(View.GONE);
     }
 
     @Override
@@ -96,17 +97,36 @@ public class DiaryActivity extends AppCompatActivity {
     }
 
     private void showDiaryScreen() {
-        mEditScreen.setVisibility(View.INVISIBLE);
         mDiaryScreen.setVisibility(View.VISIBLE);
+        mEditScreen.setVisibility(View.GONE);
     }
 
     public void doneEditing(View view) {
         DiaryItem newItem = getTheNewItem();
-        mDataManager.updateDiaryForCurrentUser(item,newItem);
-        getIntent().putExtra("diary_date",newItem.getDate());
-        extractDiaryItem();
-        updateDiaryViewsContent();
-        showDiaryScreen();
+        if(okayDate(newItem.getYear(), newItem.getMonth(), newItem.getDay()) && notFoundBefore(newItem.getYear(), newItem.getMonth(), newItem.getDay())){
+            mDataManager.updateDiaryForCurrentUser(item,newItem);
+            getIntent().putExtra("diary_date",newItem.getDate());
+            extractDiaryItem();
+            updateDiaryViewsContent();
+            showDiaryScreen();
+        }
+        else{
+            Toast.makeText(this, "NOT ACCEPTABLE DATE",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private boolean notFoundBefore(int year, int month, int day) {
+        String diary_date = Integer.toString(year) + "-" + Integer.toString(month) + "-" +Integer.toString(day);
+        if(mDataManager.getDiaryItem(diary_date) == null)
+            return true;
+        return false;
+    }
+
+    private boolean okayDate(int year, int month, int day) {
+        if ( year > 0 && month > 0 && month <= 12 && day > 0 && day <= 31)
+            return true;
+        return false;
     }
 
     private DiaryItem getTheNewItem() {
