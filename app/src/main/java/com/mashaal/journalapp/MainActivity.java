@@ -212,4 +212,28 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         intent.putExtra("diary_date",mDataSet.get(position).getDate());
         startActivity(intent);
     }
+
+    @Override
+    public void onBackPressed() {
+        if(inMainScreen() || inLoginScreen()){
+            this.finish();
+        }
+        else{
+            updateUI(GoogleSignIn.getLastSignedInAccount(this));
+        }
+    }
+
+    private boolean inLoginScreen() {
+        if(mLoginScreen.getVisibility() == View.VISIBLE){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean inMainScreen() {
+        if(mMainScreen.getVisibility() == View.VISIBLE){
+            return true;
+        }
+        return false;
+    }
 }

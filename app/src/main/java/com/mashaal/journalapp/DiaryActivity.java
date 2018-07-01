@@ -33,7 +33,6 @@ public class DiaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diary);
         mDataManager = DataManager.getDataManager(this);
-        mDataManager.startAConnection();
         setUpDiaryShowViews();
         setUpDiaryEditViews();
         extractDiaryItem();
@@ -90,8 +89,6 @@ public class DiaryActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mDataManager.closeConnection();
-        Log.d(TAG,"Connection Closed");
     }
 
     public void cancelEdit(View view) {
@@ -122,5 +119,22 @@ public class DiaryActivity extends AppCompatActivity {
         item.setDairyContent(content);
         item.setTitle(title);
         return item;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(inDiaryScreen()){
+            this.finish();
+        }
+        else{
+            showDiaryScreen();
+        }
+    }
+
+    private boolean inDiaryScreen() {
+        if(mDiaryScreen.getVisibility() == View.VISIBLE){
+            return true;
+        }
+        return false;
     }
 }

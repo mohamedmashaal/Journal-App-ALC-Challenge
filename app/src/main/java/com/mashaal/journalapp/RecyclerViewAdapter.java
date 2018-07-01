@@ -3,6 +3,7 @@ package com.mashaal.journalapp;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             mDairyItemYear = (TextView)itemView.findViewById(R.id.diary_item_year);
             mDairyItemTitle = (TextView)itemView.findViewById(R.id.diary_item_title);
             mDairyItemDayMonth = (TextView)itemView.findViewById(R.id.diary_item_day_month);
+            itemView.setOnClickListener(this);
         }
 
         public void setItemTitle(String text){
@@ -84,6 +86,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
+            Log.d("Deeee","Item clicked" + clickedPosition);
             mOnClickListener.itemClicked(clickedPosition);
         }
     }
