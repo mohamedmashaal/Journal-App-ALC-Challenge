@@ -1,17 +1,18 @@
 package com.mashaal.journalapp;
 
 import android.content.Intent;
+import android.os.Debug;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -23,11 +24,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.mashaal.journalapp.db.DataManager;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ListItemClickListener{
     private GoogleSignInClient mGoogleSignInClient;
-    private TextView mTextView;
     private SignInButton mSignInButton;
     private Button mSignOutButton;
     private static final int RC_SIGN_IN = 1001;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText mMonthEditText;
     private EditText mDayEditText;
     private EditText mContentEditText;
+    private EditText mTitleEditText;
     private DataManager dataManager;
 
     @Override
@@ -56,20 +58,22 @@ public class MainActivity extends AppCompatActivity {
         mLoginScreen = (ConstraintLayout) findViewById(R.id.login_screen);
         mMainScreen = (ConstraintLayout)findViewById(R.id.main_screen);
         mAdditionScreen = (ConstraintLayout)findViewById(R.id.addition_screen);
-        mTextView = (TextView)findViewById(R.id.middle_text);
         mSignInButton = (SignInButton)findViewById(R.id.sign_in_button);
         mSignOutButton = (Button) findViewById(R.id.sign_out_button);
         mRecyclerView = (RecyclerView)findViewById(R.id.diary_list);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RecyclerViewAdapter();
+        mAdapter = new RecyclerViewAdapter(this);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(true);
-        mYearEditText = (EditText)findViewById(R.id.year_edit_text);
-        mMonthEditText = (EditText)findViewById(R.id.month_edit_text);
-        mDayEditText = (EditText)findViewById(R.id.day_edit_text);
+        mYearEditText = (EditText)findViewById(R.id.diray_edit_year);
+        mMonthEditText = (EditText)findViewById(R.id.diray_edit_month);
+        mDayEditText = (EditText)findViewById(R.id.diray_edit_day);
         mContentEditText = (EditText)findViewById(R.id.content_edit_text);
+        mTitleEditText = (EditText)findViewById(R.id.diray_edit_title);
         dataManager = DataManager.getDataManager(this);
+        dataManager.startAConnection();
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,17 +122,23 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         if(isSignedIn()){ // user already signed in!
             updateUI(GoogleSignIn.getLastSignedInAccount(this));
+            updateCurrentUser();
         }
     }
 
     private void updateUI(GoogleSignInAccount lastSignedInAccount) {
         if(lastSignedInAccount != null) {
             showMainScreen();
+            updateCurrentUser();
             updateDataSet();
         }
         else{
             showLoginScreen();
         }
+    }
+
+    private void updateCurrentUser() {
+        dataManager.setCurrentUserID(GoogleSignIn.getLastSignedInAccount(this).getId());
     }
 
     private void updateDataSet() {
@@ -165,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void newDiary(View view) {
         showAdditionScreen();
-
     }
 
     private void showAdditionScreen() {
@@ -178,13 +187,29 @@ public class MainActivity extends AppCompatActivity {
         int year = Integer.parseInt(mYearEditText.getText().toString());
         int month = Integer.parseInt(mMonthEditText.getText().toString());
         int day = Integer.parseInt(mDayEditText.getText().toString());
+        String title = mTitleEditText.getText().toString();
         String content = mContentEditText.getText().toString();
         DiaryItem item = new DiaryItem(year,month,day);
         item.setDairyContent(content);
+        item.setTitle(title);
         dataManager.addNewDiaryForCurrentUser(item);
         mDataSet.add(item);
         mAdapter.updateDataSet(mDataSet);
         mMainScreen.setVisibility(View.VISIBLE);
         mAdditionScreen.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dataManager.closeConnection();
+        Log.d(TAG,"Connection Closed");
+    }
+
+    @Override
+    public void itemClicked(int position) {
+        Intent intent = new Intent(this, DiaryActivity.class);
+        intent.putExtra("diary_date",mDataSet.get(position).getDate());
+        startActivity(intent);
     }
 }

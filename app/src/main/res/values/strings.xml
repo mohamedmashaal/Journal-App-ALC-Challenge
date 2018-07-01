@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">Journal App</string>
+    <string name="app_name">The Journal</string>
+    <string name="app_name_two_lines">The\nJournal</string>
+    <string name="test_date">25\nOct</string>
+    <string name="year">Year</string>
+    <string name="month">Month</string>
+    <string name="day">Day</string>
+    <string name="title">Title</string>
+    <string name="diary_content">Diary Content</string>
 </resources>

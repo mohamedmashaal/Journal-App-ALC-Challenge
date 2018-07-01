@@ -5,10 +5,12 @@ package com.mashaal.journalapp;
  */
 
 public class DiaryItem {
+    private static final String [] MONTHS ={"Jan","Feb","Mar","Apr","May","June","July","Aug","Sept","Oct","Nov","Dec"};
     private int year;
     private int month;
     private int day;
     private String DairyContent ;
+    private String title;
 
     public DiaryItem(int year, int month , int day){
         this.year = year;
@@ -43,13 +45,30 @@ public class DiaryItem {
         return DairyContent;
     }
 
-    public String getTitle(){
+
+    public String getDate(){
         return new String(Integer.toString(year) + "-" + Integer.toString(month)+ "-" + Integer.toString(day));
+    }
+
+    public String getDayMonth(){
+        return day + "\n" + get3LettersMonth(month);
+    }
+
+    private String get3LettersMonth(int month){
+        return MONTHS[month-1];
     }
 
     public int getID(){
         String ID = new String(Integer.toString(year) + Integer.toString(month)+ Integer.toString(day));
         return Integer.parseInt(ID);
+    }
+
+    public String getTitle(){
+        return title;
+    }
+
+    public void setTitle(String title){
+        this.title = title;
     }
 
 }

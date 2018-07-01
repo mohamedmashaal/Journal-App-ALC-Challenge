@@ -16,7 +16,11 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.DiaryViewHolder> {
     ArrayList<DiaryItem> mDiaryDataSet;
+    final private ListItemClickListener mOnClickListener;
 
+    public RecyclerViewAdapter(ListItemClickListener listener) {
+        mOnClickListener = listener;
+    }
 
     @NonNull
     @Override
@@ -35,8 +39,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter.DiaryViewHolder holder, int position) {
         String title = mDiaryDataSet.get(position).getTitle();
-        String content = mDiaryDataSet.get(position).getDairyContent();
-        holder.setItemText(title + " \n" + content);
+        String DayMonth = mDiaryDataSet.get(position).getDayMonth();
+        String year = Integer.toString(mDiaryDataSet.get(position).getYear());
+        holder.setItemDayMonth(DayMonth);
+        holder.setItemTitle(title);
+        holder.setItemYear(year);
     }
 
     @Override
@@ -53,15 +60,35 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
 
-    public class DiaryViewHolder extends RecyclerView.ViewHolder{
-        private TextView mTextView;
+    public class DiaryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        private TextView mDairyItemYear;
+        private TextView mDairyItemTitle;
+        private TextView mDairyItemDayMonth;
         public DiaryViewHolder(View itemView) {
             super(itemView);
-            mTextView = (TextView)itemView.findViewById(R.id.diary_item);
+            mDairyItemYear = (TextView)itemView.findViewById(R.id.diary_item_year);
+            mDairyItemTitle = (TextView)itemView.findViewById(R.id.diary_item_title);
+            mDairyItemDayMonth = (TextView)itemView.findViewById(R.id.diary_item_day_month);
         }
 
-        public void setItemText(String text){
-            mTextView.setText(text);
+        public void setItemTitle(String text){
+            mDairyItemTitle.setText(text);
         }
+        public void setItemYear(String text){
+            mDairyItemYear.setText(text);
+        }
+        public void setItemDayMonth(String text){
+            mDairyItemDayMonth.setText(text);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.itemClicked(clickedPosition);
+        }
+    }
+
+    interface ListItemClickListener{
+        void itemClicked(int position);
     }
 }

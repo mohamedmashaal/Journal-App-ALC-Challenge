@@ -1,18 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="8dp"
     android:background="@color/colorAccent"
-    android:padding="16dp">
+    android:backgroundTint="@color/common_google_signin_btn_text_dark_focused"
+    android:gravity="center_vertical"
+    android:padding="8dp">
 
     <TextView
-        android:id="@+id/diary_item"
+        android:id="@+id/diary_item_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:fontFamily="@font/anton"
+        android:text="2020"
+        android:textAlignment="center"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/diary_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="5"
+        android:fontFamily="@font/anton"
+        android:text="Best Day Ever"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/diary_item_day_month"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
         android:layout_gravity="center"
+        android:layout_weight="1"
+        android:fontFamily="@font/anton"
         android:gravity="center"
-        android:text="TextView"
+        android:text="@string/test_date"
         android:textAlignment="center"
         android:textColor="@android:color/white" />
-</FrameLayout>
+
+</LinearLayout>
