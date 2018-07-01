@@ -1,5 +1,5 @@
 # Journal-App
-![Main Screen](https://ibb.co/n5c2Bd)
+![Main](https://github.com/MohamedMashaal/Journal-App-ALC-Challenge/blob/master/screenshots/main_screen.png)
 ## Intro
 this app was implemented as part of the **Google Africa Scholarship** and **Andela Learning Community (ALC)** **#7DaysofCodeChallenge**
 
