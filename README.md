@@ -16,3 +16,10 @@ users are be able to:
 -   View the contents of a diary entry.
     
 -   Add and modify an entry.
+
+## Screen Shots
+
+![List View](https://github.com/MohamedMashaal/Journal-App-ALC-Challenge/blob/master/screenshots/list_view.png)
+![Add Screen](https://github.com/MohamedMashaal/Journal-App-ALC-Challenge/blob/master/screenshots/add_screen.png)
+![Content Screen](https://github.com/MohamedMashaal/Journal-App-ALC-Challenge/blob/master/screenshots/content_screen.png)
+![Edit Screen](https://github.com/MohamedMashaal/Journal-App-ALC-Challenge/blob/master/screenshots/edit_screen.png)
